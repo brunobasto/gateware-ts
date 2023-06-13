@@ -10,6 +10,7 @@ export const SWITCH_STATEMENT = 'switchStatement';
 export const COMBINATIONAL_SWITCH_ASSIGNMENT_STATEMENT = 'combinationalSwitchAssignmentStatement';
 export const CASE_STATEMENT = 'caseStatement';
 export const DEFAULT_CASE_STATEMENT = 'defaultCaseStatement';
+export const WHILE_STATEMENT = 'whileStatement';
 
 export const SUBMODULE_PATH_EXPRESSION = 'submodulePathExpression';
 export const COMPARRISON_EXPRESSION = 'comparrisonExpression';

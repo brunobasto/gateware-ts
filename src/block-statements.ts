@@ -10,7 +10,8 @@ import {
   SWITCH_STATEMENT,
   CASE_STATEMENT,
   DEFAULT_CASE_STATEMENT,
-  COMBINATIONAL_SWITCH_ASSIGNMENT_STATEMENT
+  COMBINATIONAL_SWITCH_ASSIGNMENT_STATEMENT,
+  WHILE_STATEMENT
 } from './constants';
 import {
   BlockStatement,
@@ -92,6 +93,17 @@ export class IfStatement<SubjectType, BodyStatementsT> {
   }
 }
 
+export class WhileStatement<SubjectType, BodyStatementsT> {
+  readonly type = WHILE_STATEMENT;
+  subject: SubjectType;
+  exprs: BodyStatementsT[];
+
+  constructor(expr:SubjectType, body:BodyStatementsT[]) {
+    this.exprs = body;
+    this.subject = expr;
+  }
+}
+
 /**
  * Conditionally run some logic
  * @param expr Expression to check
@@ -135,6 +147,9 @@ export const Case = (s:SignalLikeOrValue, body:BlockStatement[]):SubjectiveCaseS
  * @param body Body of expressions to run in this case
  */
 export const Default = (body:BlockStatement[]):DefaultCaseStatement => ({ body, type: DEFAULT_CASE_STATEMENT });
+
+export const While = (expr:SignalLike, body:BlockStatement[]) =>
+  new WhileStatement<SignalLike, BlockStatement>(expr, body);
 
 /**
  * Combinational assignment to [[Port]] `to`, where based on the value of `conditionalSignal`, a case is selected as the output

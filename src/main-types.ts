@@ -1,4 +1,4 @@
-import { IfStatement, ElseIfStatement, IfElseBlock } from './block-statements';
+import { IfStatement, ElseIfStatement, IfElseBlock, WhileStatement } from './block-statements';
 import {
   SignalT,
   ConstantT,
@@ -176,7 +176,7 @@ export type LogicStatement  = IfStatement<SignalLike, BlockStatement>
                             | ElseIfStatement<SignalLike, BlockStatement>
                             | IfElseBlock<SignalLike, BlockStatement>
                             | SwitchStatement;
-export type BlockStatement = LogicStatement | AssignmentStatement | DisplayExpression;
+export type BlockStatement = LogicStatement | AssignmentStatement | DisplayExpression | WhileStatement<SignalLike, BlockStatement>;
 
 /** @internal */
 export type CombinationalSwitchAssignmentStatement = {
@@ -316,6 +316,7 @@ export type SimulationExpression  = BlockStatement
                                   | IfStatement<SimulationSignalLike, SimulationExpression>
                                   | ElseIfStatement<SimulationSignalLike, SimulationExpression>
                                   | IfElseBlock<SimulationSignalLike, SimulationExpression>
+                                  | WhileStatement<SimulationSignalLike, SimulationExpression>
                                   | SimulationAssignmentStatement;
 
 /** @internal */

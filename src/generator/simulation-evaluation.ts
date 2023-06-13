@@ -28,9 +28,10 @@ import {
   ELSE_IF_STATEMENT,
   ELSE_STATEMENT,
   SIMULATION_ASSIGNMENT_EXPRESSION,
-  SIGNAL_ARRAY
+  SIGNAL_ARRAY,
+  WHILE_STATEMENT
 } from '../constants';
-import { IfStatement, IfElseBlock, ElseIfStatement } from '../block-statements';
+import { IfStatement, IfElseBlock, ElseIfStatement, WhileStatement } from '../block-statements';
 import { TabLevel } from '../helpers';
 import { getRegSize } from './common';
 import { SignalT, ConstantT, SignalArrayMemberReference } from '../signals';
@@ -185,6 +186,10 @@ export class SimulationEvaluator {
         return this.evaluateAssignmentExpression(expr as AssignmentStatement);
       }
 
+      case WHILE_STATEMENT: {
+        return this.evaluateWhileStatement(expr);
+      }
+
       case IF_STATEMENT: {
         return this.evaluateIfStatement(expr);
       }
@@ -217,6 +222,20 @@ export class SimulationEvaluator {
         return this.evaluateSimulationAssignmentExpression(expr as SimulationAssignmentStatement);
       }
     }
+  }
+
+  evaluateWhileStatement(w: WhileStatement<SimulationSignalLike, SimulationExpression>) {
+    const out = [];
+    out.push(`${this.t.l()}while (${this.expr.evaluate(w.subject)}) begin`);
+    this.t.push();
+
+    w.exprs.forEach(expr => {
+      out.push(this.evaluate(expr));
+    });
+
+    this.t.pop();
+    out.push(`${this.t.l()}end`);
+    return out.join('\n');
   }
 
   evaluateEdgeAssertion(e:EdgeAssertion) {
