@@ -176,7 +176,7 @@ export type LogicStatement  = IfStatement<SignalLike, BlockStatement>
                             | ElseIfStatement<SignalLike, BlockStatement>
                             | IfElseBlock<SignalLike, BlockStatement>
                             | SwitchStatement;
-export type BlockStatement = LogicStatement | AssignmentStatement;
+export type BlockStatement = LogicStatement | AssignmentStatement | DisplayExpression;
 
 /** @internal */
 export type CombinationalSwitchAssignmentStatement = {

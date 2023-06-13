@@ -14,7 +14,8 @@ import {
   UnsliceableExpressionMap,
   SignalLike,
   PortOrSignalArray,
-  SignalLikeOrValue
+  SignalLikeOrValue,
+  DisplayExpression
 } from '../main-types';
 import {
   ConcatT,
@@ -38,7 +39,8 @@ import {
   SWITCH_STATEMENT,
   CASE_STATEMENT,
   ELSE_IF_STATEMENT,
-  ELSE_STATEMENT
+  ELSE_STATEMENT,
+  DISPLAY_EXPRESSION
 } from '../constants';
 import { IfStatement, ElseIfStatement, IfElseBlock } from '../block-statements';
 import { TabLevel } from '../helpers';
@@ -157,7 +159,21 @@ export class SyncBlockEvaluator {
       case SWITCH_STATEMENT: {
         return this.evaluateSwitchStatement(expr as SwitchStatement);
       }
+
+      case DISPLAY_EXPRESSION: {
+        return this.evaluateDisplayExpression(expr as DisplayExpression);
+      }
     }
+  }
+
+  evaluateDisplayExpression(d:DisplayExpression) {
+    const params = d.messages.map(message => {
+      if (typeof message === 'string') {
+        return `"${message}"`;
+      }
+      return this.workingModule.getModuleSignalDescriptor(message).name
+    }).join(', ');
+    return `${this.t.l()}$display(${params});`;
   }
 
   evaluateBlock(s:SyncBlock) {
