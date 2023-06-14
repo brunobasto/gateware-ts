@@ -318,7 +318,7 @@ export class CodeGenerator {
         header,
         registers,
         wires,
-        alwaysStarBlock,
+        alwaysStarBlock: unsliceableExpressionMap.length ? alwaysStarBlock : '',
         submodules,
         everyTimescaleBlocks,
         simulationRunBlock,

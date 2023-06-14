@@ -313,6 +313,8 @@ export type SimulationExpression  = BlockStatement
                                   | RepeatedEdgeAssertion
                                   | DisplayExpression
                                   | FinishExpression
+                                  | FatalExpression
+                                  | TickExpression
                                   | IfStatement<SimulationSignalLike, SimulationExpression>
                                   | ElseIfStatement<SimulationSignalLike, SimulationExpression>
                                   | IfElseBlock<SimulationSignalLike, SimulationExpression>
@@ -352,6 +354,11 @@ export interface FinishExpression {
   type: 'finishExpression';
 }
 
+export interface FatalExpression {
+  type: 'fatalExpression';
+  code: number;
+}
+
 /**
  * Timescales that can be used in simulations
  */
@@ -367,4 +374,11 @@ export type TimeScaleValue = {
   type: 'timescaleValue';
   timescale: TimeScale;
   value: number;
+};
+
+export type TickExpression = {
+  type: 'tickExpression';
+  time: number;
+  edgeType?: Edge;
+  signal: Port;
 };

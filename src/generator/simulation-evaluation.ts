@@ -16,6 +16,8 @@ import {
   DisplayExpression,
   SimulationSignalLike,
   SimulationAssignmentStatement,
+  FatalExpression,
+  TickExpression,
 } from '../main-types';
 import {
   ASSIGNMENT_EXPRESSION,
@@ -29,7 +31,9 @@ import {
   ELSE_STATEMENT,
   SIMULATION_ASSIGNMENT_EXPRESSION,
   SIGNAL_ARRAY,
-  WHILE_STATEMENT
+  WHILE_STATEMENT,
+  FATAL_EXPRESSION,
+  TICK_EXPRESSION
 } from '../constants';
 import { IfStatement, IfElseBlock, ElseIfStatement, WhileStatement } from '../block-statements';
 import { TabLevel } from '../helpers';
@@ -214,6 +218,10 @@ export class SimulationEvaluator {
         return this.evaluateDisplayExpression(expr as DisplayExpression);
       }
 
+      case FATAL_EXPRESSION: {
+        return this.evaluateFatalExpression(expr as FatalExpression);
+      }
+
       case FINISH_EXPRESSION: {
         return `${this.t.l()}$finish();`;
       }
@@ -221,7 +229,19 @@ export class SimulationEvaluator {
       case SIMULATION_ASSIGNMENT_EXPRESSION: {
         return this.evaluateSimulationAssignmentExpression(expr as SimulationAssignmentStatement);
       }
+
+      case TICK_EXPRESSION: {
+        return this.evaluateTickExpression(expr as TickExpression);
+      }
     }
+  }
+
+  evaluateTickExpression(t: TickExpression) {
+    return `@(${edgeToString(t.edgeType)} ${this.expr.evaluate(t.signal)}) #${t.time};`
+  }
+
+  evaluateFatalExpression(f:FatalExpression) {
+    return `${this.t.l()}$fatal(${f.code});`;
   }
 
   evaluateWhileStatement(w: WhileStatement<SimulationSignalLike, SimulationExpression>) {

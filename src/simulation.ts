@@ -1,5 +1,5 @@
-import { EDGE_ASSERTION, DISPLAY_EXPRESSION, REPEATED_EDGE_ASSERTION, TIMESCALE_VALUE, FINISH_EXPRESSION } from './constants';
-import { BlockStatement, Port, Edge, BlockExpressionsAndTime, SimulationExpression, DisplayExpression, RepeatedEdgeAssertion, EdgeAssertion, TimeScaleValue, TimeScale, FinishExpression, SignalLike } from './main-types';
+import { EDGE_ASSERTION, DISPLAY_EXPRESSION, REPEATED_EDGE_ASSERTION, TIMESCALE_VALUE, FINISH_EXPRESSION, FATAL_EXPRESSION } from './constants';
+import { BlockStatement, Port, Edge, BlockExpressionsAndTime, SimulationExpression, DisplayExpression, RepeatedEdgeAssertion, EdgeAssertion, TimeScaleValue, TimeScale, FinishExpression, SignalLike, FatalExpression, TickExpression } from './main-types';
 import { SignalT, Not } from './signals';
 import { SIf } from './block-statements';
 
@@ -46,6 +46,14 @@ export const display = (...messages:(string|SignalT)[]):DisplayExpression => ({
 export const finish = ():FinishExpression => ({ type: FINISH_EXPRESSION });
 
 /**
+ * Finish the simulation with error. The simulation will end whenever one of these is reached.
+ * Only used during simulation.
+ */
+export const fatal = (code: number):FatalExpression => ({ type: FATAL_EXPRESSION, code });
+
+export const tick = (time: number = 1, signal: SignalT, edgeType: Edge = Edge.Positive): TickExpression => ({ type: 'tickExpression', signal, edgeType, time });
+
+/**
  * Assert a condition that will cause the simulation to exit if violated
  * Only used during simulation.
  * @param condition 
@@ -54,7 +62,7 @@ export const finish = ():FinishExpression => ({ type: FINISH_EXPRESSION });
 export const assert = (condition:SignalLike, messages:(string|SignalT)[]):SimulationExpression => (
   SIf (Not(condition), [
     display(...messages),
-    finish()
+    fatal(1)
   ])
 )
 
@@ -96,7 +104,6 @@ export const microseconds = createTimescaleFunction(TimeScale.Microseconds);
  * @param n
  */
 export const milleseconds = createTimescaleFunction(TimeScale.Milleseconds);
-
 
 /**
  * Class for describing the events within a simulation. Part of every [[GWModule]].
